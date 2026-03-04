@@ -3,94 +3,193 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World Arcade</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <title>Hello World 1982 Neon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
   <style>
-    :root { --bg:#050510; --neon:#00f7ff; --pink:#ff2bd6; --yellow:#ffe76a; --green:#48ff83; }
+    :root {
+      --bg-top: #130022;
+      --bg-bottom: #03010b;
+      --neon-pink: #ff2dbf;
+      --neon-cyan: #27f6ff;
+      --neon-purple: #8b5dff;
+      --neon-orange: #ff7e39;
+      --text: #d8f7ff;
+    }
+
     * { box-sizing: border-box; }
+
     body {
-      margin: 0; min-height: 100vh; overflow: hidden;
-      background: radial-gradient(circle at 50% 20%, #1a1a3a 0%, var(--bg) 55%);
-      color: #fff; font-family: 'VT323', monospace;
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      color: var(--text);
+      background: radial-gradient(circle at 50% -10%, #3f0f6f 0%, var(--bg-top) 35%, var(--bg-bottom) 75%);
+      font-family: "VT323", monospace;
+      display: grid;
+      place-items: center;
     }
+
+    .sun {
+      position: fixed;
+      width: min(70vw, 700px);
+      aspect-ratio: 1;
+      top: 8vh;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255, 180, 90, 0.95) 0,
+          rgba(255, 180, 90, 0.95) 18px,
+          rgba(255, 80, 160, 0.9) 18px,
+          rgba(255, 80, 160, 0.9) 30px
+        );
+      filter: drop-shadow(0 0 35px rgba(255, 86, 194, 0.6));
+      opacity: 0.95;
+      z-index: 0;
+    }
+
+    .horizon {
+      position: fixed;
+      inset: auto 0 0 0;
+      height: 56vh;
+      perspective: 700px;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .grid {
+      position: absolute;
+      inset: 0;
+      transform-origin: center top;
+      transform: rotateX(64deg) scale(1.25);
+      background:
+        repeating-linear-gradient(to right, rgba(39, 246, 255, 0.55) 0 2px, transparent 2px 70px),
+        repeating-linear-gradient(to bottom, rgba(255, 45, 191, 0.45) 0 2px, transparent 2px 70px);
+      box-shadow: 0 -10px 80px rgba(39, 246, 255, 0.25) inset;
+      animation: grid-scroll 6s linear infinite;
+    }
+
+    @keyframes grid-scroll {
+      from { background-position: 0 0, 0 0; }
+      to { background-position: 0 0, 0 140px; }
+    }
+
     .scanlines::before {
-      content: ""; position: fixed; inset: 0; pointer-events: none;
-      background: repeating-linear-gradient(to bottom, rgba(255,255,255,.04), rgba(255,255,255,.04) 1px, transparent 2px, transparent 4px);
-      mix-blend-mode: soft-light; animation: drift 6s linear infinite;
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.04) 0,
+        rgba(255, 255, 255, 0.04) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0.75;
+      z-index: 5;
     }
-    @keyframes drift { from {transform:translateY(0)} to {transform:translateY(4px)} }
 
-    .stars { position: fixed; inset: 0; background-image:
-      radial-gradient(2px 2px at 15% 30%, #fff, transparent),
-      radial-gradient(2px 2px at 80% 60%, #fff, transparent),
-      radial-gradient(1px 1px at 60% 20%, #fff, transparent),
-      radial-gradient(2px 2px at 40% 80%, #fff, transparent);
-      animation: twinkle 3s ease-in-out infinite alternate;
-      opacity:.55;
+    .noise::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(255,255,255,0.1) 0.5px, transparent 0.5px);
+      background-size: 3px 3px;
+      opacity: 0.08;
+      z-index: 6;
+      animation: flicker 0.12s infinite steps(2);
     }
-    @keyframes twinkle { from{opacity:.35} to{opacity:.75} }
 
-    .wrap { position: relative; z-index: 2; display:grid; place-items:center; min-height:100vh; padding:24px; }
-    .cabinet {
-      width:min(880px, 100%); border:4px solid var(--neon); border-radius:18px;
-      background: linear-gradient(160deg, rgba(10,20,40,.88), rgba(25,10,35,.84));
-      box-shadow: 0 0 18px var(--neon), 0 0 48px rgba(0,247,255,.4), inset 0 0 32px rgba(255,255,255,.06);
-      padding: 28px;
+    @keyframes flicker {
+      0% { opacity: 0.06; }
+      50% { opacity: 0.1; }
+      100% { opacity: 0.07; }
     }
-    .marquee {
-      font-family:'Press Start 2P', monospace; text-align:center; font-size: clamp(18px, 2.4vw, 34px);
-      color: var(--yellow); text-shadow:0 0 10px var(--yellow), 0 0 26px #ff8f00;
-      animation: pulse 1.5s ease-in-out infinite alternate;
-      margin-bottom: 18px;
-    }
-    @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.03)} }
 
-    .screen {
-      border:3px solid var(--pink); border-radius:12px; padding:20px;
-      background: #070b18; box-shadow: inset 0 0 20px rgba(255,43,214,.25);
-      min-height: 250px; display:grid; place-items:center; text-align:center;
+    .card {
+      position: relative;
+      z-index: 4;
+      width: min(900px, 92vw);
+      padding: 28px 26px 24px;
+      border: 2px solid rgba(39, 246, 255, 0.8);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(8, 10, 26, 0.7), rgba(4, 4, 14, 0.8));
+      box-shadow:
+        0 0 0 2px rgba(255, 45, 191, 0.45) inset,
+        0 0 30px rgba(39, 246, 255, 0.35),
+        0 0 60px rgba(255, 45, 191, 0.25);
+      text-align: center;
     }
-    .hello {
-      font-family:'Press Start 2P', monospace;
-      font-size: clamp(16px, 3vw, 42px);
-      line-height:1.4;
-      color: var(--green);
-      text-shadow: 0 0 8px var(--green), 0 0 28px rgba(72,255,131,.5);
-      animation: glitch 2.2s infinite;
-    }
-    @keyframes glitch {
-      0%, 100% { transform: translate(0,0); filter:hue-rotate(0deg); }
-      20% { transform: translate(2px,-1px); }
-      21% { transform: translate(-2px,1px); }
-      45% { transform: translate(1px,0); filter:hue-rotate(18deg); }
-      46% { transform: translate(-1px,0); }
-      70% { transform: translate(0,1px); }
-    }
-    .sub { margin-top: 14px; font-size: clamp(18px, 2.2vw, 30px); color:#9ee8ff; }
-    .coins { margin-top: 16px; font-size: 22px; color: var(--yellow); letter-spacing: 2px; }
-    .coin { display:inline-block; animation: bounce 900ms ease-in-out infinite; }
-    .coin:nth-child(2){animation-delay:.1s}.coin:nth-child(3){animation-delay:.2s}
-    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
 
-    .footer { text-align:center; margin-top:16px; color:#8aa0c7; font-size:20px; }
+    .year {
+      margin: 0;
+      font-family: "Press Start 2P", monospace;
+      font-size: clamp(12px, 2vw, 18px);
+      color: var(--neon-cyan);
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px var(--neon-cyan);
+    }
+
+    .title {
+      margin: 14px 0 10px;
+      font-family: "Monoton", system-ui;
+      font-size: clamp(42px, 9vw, 110px);
+      line-height: 0.95;
+      color: #ffd8ff;
+      text-shadow:
+        0 0 8px #fff,
+        0 0 20px var(--neon-pink),
+        0 0 42px var(--neon-pink),
+        0 0 70px var(--neon-purple);
+      animation: glow 2.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { filter: brightness(0.95) saturate(0.95); }
+      to { filter: brightness(1.08) saturate(1.2); }
+    }
+
+    .subtitle {
+      margin: 0;
+      font-family: "Press Start 2P", monospace;
+      font-size: clamp(10px, 1.8vw, 15px);
+      color: var(--neon-orange);
+      text-shadow: 0 0 8px var(--neon-orange), 0 0 20px rgba(255,126,57,0.6);
+      letter-spacing: 1px;
+    }
+
+    .tagline {
+      margin: 16px 0 12px;
+      font-size: clamp(22px, 3vw, 34px);
+      color: #b3f6ff;
+      text-shadow: 0 0 10px rgba(39, 246, 255, 0.8);
+    }
+
+    .footer {
+      margin-top: 10px;
+      font-size: clamp(16px, 2.4vw, 22px);
+      color: #b08bff;
+      opacity: 0.95;
+    }
   </style>
 </head>
-<body class="scanlines">
-  <div class="stars"></div>
-  <div class="wrap">
-    <main class="cabinet">
-      <div class="marquee">KAREN ARCADE SYSTEM v1.0</div>
-      <section class="screen">
-        <div>
-          <div class="hello">HELLO<br>WORLD</div>
-          <div class="sub">INSERT IDEAS. PRESS START. SHIP FAST.</div>
-          <div class="coins"><span class="coin">🪙</span> <span class="coin">🪙</span> <span class="coin">🪙</span></div>
-        </div>
-      </section>
-      <div class="footer">Deployed by Karen • OpenClaw x Vercel</div>
-    </main>
-  </div>
+<body class="scanlines noise">
+  <div class="sun" aria-hidden="true"></div>
+  <div class="horizon" aria-hidden="true"><div class="grid"></div></div>
+
+  <main class="card">
+    <p class="year">EST. 1982 // NIGHT MODE</p>
+    <h1 class="title">HELLO<br />WORLD</h1>
+    <p class="subtitle">RETRO NEON EDITION</p>
+    <p class="tagline">Insert coin. Press start. Ship loud.</p>
+    <p class="footer">Powered by Karen • OpenClaw • Vercel</p>
+  </main>
 </body>
 </html>
